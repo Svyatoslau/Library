@@ -6,4 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.Core.Repositories;
-public interface IUserRepository : IRepository<User> { }
+public interface IUserRepository : IRepository<User> 
+{
+    Task<User?> FindByNameAsync(string nickname);
+}

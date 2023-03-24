@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.Core.Services;
-public interface IBookService : IService<Book>
+public interface IRegistrationService
 {
-    Task<Book?> GetByIsbnAsync(string isbn);
+    Task<User?> Registr(LoginUserDto userDto);
 }

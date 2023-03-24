@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace Library.Core.Repositories;
 public interface IBookRepository : IRepository<Book>
 {
-    Task<Book> GetBookByIsbn(string isbn);
+    Task<Book?> GetBookByIsbn(string isbn);
 }

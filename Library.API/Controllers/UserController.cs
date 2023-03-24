@@ -18,7 +18,7 @@ public class UserController : ControllerBase
     )
     {
         var token = await _userService
-            .Authenticate(model.Nickname, model.Password);
+            .Authenticate(model);
 
         if (token is null)
         {
@@ -34,7 +34,7 @@ public class UserController : ControllerBase
     ) 
     {
         var user = await _userService
-            .Registr(model.Nickname, model.Password);
+            .Registr(model);
 
         if (user is null)
         {

@@ -11,7 +11,7 @@ namespace Library.DAL.Repositories;
 public class BookRepository : Repository<Book>, IBookRepository
 {
     public BookRepository(LibraryDbContext context) : base(context) { }
-    public async Task<Book> GetBookByIsbn(string isbn)
+    public async Task<Book?> GetBookByIsbn(string isbn)
     {
         return await _dbSet.FirstOrDefaultAsync(b => b.Isbn == isbn);
     }
