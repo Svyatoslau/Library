@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace Library.Core.Services;
 public interface IBookService : IService<Book>
 {
-    Task<Book> GetByIsbn(string isbn);
+    Task<Book> GetByIsbnAsync(string isbn);
 }

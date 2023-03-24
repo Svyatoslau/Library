@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Library.Core.Models;
+using Library.Core.Models.Dto;
+using Library.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +12,8 @@ namespace Library.API.Controllers;
 [ApiController]
 public class BookController : ControllerBase
 {
-    
+    private readonly IBookService _bookService;
+    private readonly IMapper _mapper;
     public BookController()
     {
 
@@ -17,7 +22,11 @@ public class BookController : ControllerBase
     [HttpGet("books")]
     public async Task<ActionResult> GetBooksAsync()
     {
-        return Ok();
+        var books = await _bookService.GetAllAsync();
+
+        var booksDto = _mapper.Map<IEnumerable<BookDto>>(books);
+
+        return Ok(booksDto);
     }
 
     [HttpGet("book/{id}")]
@@ -25,7 +34,15 @@ public class BookController : ControllerBase
         [FromRoute] int id
     )
     {
-        return Ok();
+        var book = await _bookService.GetByIdAsync(id);
+        if(book is null)
+        {
+            return NotFound($"The book, with id: {id}, was not found");
+        }
+
+        var bookDto = _mapper.Map<BookDto>(book);
+
+        return Ok(bookDto);
     }
 
     [HttpGet("book")]
@@ -33,31 +50,67 @@ public class BookController : ControllerBase
         [FromQuery] string isbn
     )
     {
-        return Ok();
+        var book = _bookService.GetByIsbnAsync(isbn);
+        if (book is null)
+        {
+            return NotFound($"The book, with ISBN: {isbn}, was not found");
+        }
+
+        var bookDto = _mapper.Map<BookDto>(book);
+
+        return Ok(bookDto);
     }
 
     [HttpPost("book")]
     public async Task<ActionResult> CreateBookAsync(
-        [FromBody] string book
+        [FromBody] BookForCreateDto model
     )
     {
-        return Ok();
+        var newBook = _mapper.Map<Book>(model);
+
+        var createdBook = await _bookService.AddAsync(newBook);
+        if (createdBook is null)
+        {
+            return BadRequest(new { message = "Book exists" });
+        }
+
+        var createdBookDto = _mapper.Map<BookDto>(createdBook);
+
+        return Ok(createdBookDto);
     }
 
     [HttpPut("book")]
     public async Task<ActionResult> UpdateBookAsync(
-        [FromBody] string book
+        [FromBody] BookForCreateDto model
     )
     {
-        return Ok();
+        var bookForUpdate = _mapper.Map<Book>(model);
+
+        var updatedBook = await _bookService.UpdateAsync(bookForUpdate);
+        if (updatedBook is null)
+        {
+            return NotFound(new { message = "Book for update not exists" });
+        }
+
+        var updatedBookDto = _mapper.Map<BookDto>(updatedBook);
+
+        return Ok(updatedBookDto);
     }
 
     [HttpDelete("book/{id}")]
-    public async Task<ActionResult> DeleteBookAsyncNow(
+    public async Task<ActionResult> DeleteBookAsync(
         [FromRoute] int id
     )
     {
-        return Ok();
+        var deletedBook = await _bookService.DeleteByIdAsync(id);
+        if (deletedBook is null)
+        {
+            return NotFound("Book for delete not exists");
+        }
+
+        var deletedBookDto = _mapper.Map<BookDto>(deletedBook);
+
+        return Ok(deletedBookDto);
     }
 
 }
