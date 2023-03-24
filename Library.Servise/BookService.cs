@@ -23,14 +23,20 @@ public class BookService : IBookService
 
     public async Task<Book?> AddAsync(Book entity)
     {
-        var book = GetByIsbnAsync(entity.Isbn);
+        Console.WriteLine($"{entity.Name} {entity.Isbn}");
+        var book = await GetByIsbnAsync(entity.Isbn);
+
+
         if (book is not null)
         {
             return null;
         }
 
+
         await _bookRepository.AddAsync(entity);
         await _unitOfWork.CommitAsync();
+
+        Console.WriteLine($"{entity.Name} {entity.Id}");
 
         return entity;
     }
@@ -64,13 +70,16 @@ public class BookService : IBookService
         return await _bookRepository.GetByIdAsync(id);
     }
 
-    public Task<Book?> GetByIsbnAsync(string isbn)
+    public async Task<Book?> GetByIsbnAsync(string isbn)
     {
-        return _bookRepository.GetBookByIsbn(isbn);
+        return await _bookRepository.GetBookByIsbn(isbn);
     }
 
-    public Task<Book> UpdateAsync(Book entity)
+    public async Task<Book> UpdateAsync(Book entity)
     {
-        throw new NotImplementedException();
+        await _bookRepository.UpdateAsync(entity);
+        await _unitOfWork.CommitAsync();
+
+        return entity;
     }
 }

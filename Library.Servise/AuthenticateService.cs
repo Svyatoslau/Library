@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.Servise;
-internal class AuthenticateService : IAuthenticationService
+public class AuthenticateService : IAuthenticationService
 {
 
     private readonly IUnitOfWork _unitOfWork;

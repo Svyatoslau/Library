@@ -1,4 +1,11 @@
+using Library.Core;
+using Library.Core.Models;
+using Library.Core.Security;
+using Library.Core.Services;
+using Library.Core.UnitOfWork;
 using Library.DAL;
+using Library.DAL.UnitOfWork;
+using Library.Servise;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +20,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
-builder.Services.AddDbContext<LibraryDbContext>(option => option.UseSqlServer(connection));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -29,6 +35,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
         };
     });
+
+builder.Services
+    .AddScoped<IUnitOfWork, UnitOfWork>()
+    .AddScoped<IAuthenticationService, AuthenticateService>()
+    .AddScoped<IBookService, BookService>()
+    .AddScoped<IUserService, UserService>()
+    .AddScoped<IRegistrationService, RegistrationService>()
+    .AddScoped<ITokenService, TokenService>()
+    .AddSingleton<IHasher, Hasher>()
+    .AddAutoMapper(typeof(LibraryProfile))
+    .AddDbContext<LibraryDbContext>(option =>
+        option.UseSqlServer(connection));
 
 
 

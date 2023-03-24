@@ -32,11 +32,14 @@ public class RegistrationService : IRegistrationService
         {
             return null;
         }
-
+        
         var newUser = _mapper.Map<User>(userDto);
         newUser.Password = _hasher.Hash(newUser.Password);
 
         await _unitOfWork.UserRepository.AddAsync(newUser);
+        await _unitOfWork.CommitAsync();
+
+        Console.WriteLine($"{newUser.Id} {newUser.Nickname}");
 
         return newUser;
     }

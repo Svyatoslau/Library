@@ -10,7 +10,8 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
 
-    public UserController() { }
+    public UserController(IUserService userService) =>
+        _userService = userService;
 
     [HttpPost("login")]
     public async Task<ActionResult> LoginUserAsync(
@@ -25,7 +26,7 @@ public class UserController : ControllerBase
             return BadRequest(new { message = "Not valid credentials" });
         }
 
-        return Ok(token);
+        return Ok(new {token = token});
     }
 
     [HttpPost("registration")]

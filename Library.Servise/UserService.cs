@@ -32,7 +32,7 @@ public class UserService : IUserService
 
     public async Task<User?> AddAsync(User entity)
     {
-        var user = _userRepositry.FindByNameAsync(entity.Nickname);
+        var user = await _userRepositry.FindByNameAsync(entity.Nickname);
         if (user is not null)
         {
             return null;

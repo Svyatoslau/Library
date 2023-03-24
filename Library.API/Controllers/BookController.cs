@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers;
-[Authorize]
+
 [Route("api")]
+[Authorize]
 [ApiController]
 public class BookController : ControllerBase
 {
     private readonly IBookService _bookService;
     private readonly IMapper _mapper;
-    public BookController()
+    public BookController(IBookService bookService, IMapper mapper) 
     {
-
+        _bookService = bookService;
+        _mapper = mapper;
     }
 
     [HttpGet("books")]
@@ -50,12 +52,12 @@ public class BookController : ControllerBase
         [FromQuery] string isbn
     )
     {
-        var book = _bookService.GetByIsbnAsync(isbn);
+        var book = await _bookService.GetByIsbnAsync(isbn);
         if (book is null)
         {
             return NotFound($"The book, with ISBN: {isbn}, was not found");
         }
-
+        
         var bookDto = _mapper.Map<BookDto>(book);
 
         return Ok(bookDto);
@@ -67,6 +69,7 @@ public class BookController : ControllerBase
     )
     {
         var newBook = _mapper.Map<Book>(model);
+
 
         var createdBook = await _bookService.AddAsync(newBook);
         if (createdBook is null)
