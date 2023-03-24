@@ -79,14 +79,18 @@ public class BookController : ControllerBase
         return Ok(createdBookDto);
     }
 
-    [HttpPut("book")]
+    [HttpPut("book/{id}")]
     public async Task<ActionResult> UpdateBookAsync(
-        [FromBody] BookForCreateDto model
+        [FromBody] Book model,
+        [FromRoute] int id
     )
     {
-        var bookForUpdate = _mapper.Map<Book>(model);
+        if (model.Id != id)
+        {
+            return BadRequest(new { message = "Different id" });
+        }
 
-        var updatedBook = await _bookService.UpdateAsync(bookForUpdate);
+        var updatedBook = await _bookService.UpdateAsync(model);
         if (updatedBook is null)
         {
             return NotFound(new { message = "Book for update not exists" });
