@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  library.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5200:80"
+    depends_on:
+        - mssql
+  mssql:
+    ports:
+        - '1433:1433'
+    environment:
+       - ACCEPT_EULA=Y
+       - SA_PASSWORD=MyPassword123 
