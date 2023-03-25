@@ -1,5 +1,6 @@
 ﻿using Library.Core.Models;
 using Library.DAL.Configuration;
+using Library.DAL.Origin;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,10 @@ public class LibraryDbContext : DbContext
         modelBuilder
             .ApplyConfiguration(new BookConfiguration())
             .ApplyConfiguration(new UserConfiguration());
+
+        modelBuilder
+            .ApplyConfiguration(new BookOrigin())
+            .ApplyConfiguration(new UserOrigin());
     }
 
 }
